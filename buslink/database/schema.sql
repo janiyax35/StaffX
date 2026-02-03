@@ -184,9 +184,32 @@ EXECUTE FUNCTION check_bus_limit();
 -- Function to handle new user signup (auto-create profile)
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
+DECLARE
+  v_role user_role;
+  v_role_str TEXT;
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
-  VALUES (new.id, new.raw_user_meta_data->>'full_name', (new.raw_user_meta_data->>'role')::user_role);
+  -- Get role from metadata, default to staff if missing or invalid
+  v_role_str := new.raw_user_meta_data->>'role';
+
+  IF v_role_str IS NULL THEN
+    v_role := 'staff';
+  ELSIF v_role_str = 'admin' THEN
+    v_role := 'admin';
+  ELSIF v_role_str = 'owner' THEN
+    v_role := 'owner';
+  ELSIF v_role_str = 'driver' THEN
+    v_role := 'driver';
+  ELSE
+    v_role := 'staff';
+  END IF;
+
+  INSERT INTO public.profiles (id, full_name, role, is_driver)
+  VALUES (
+    new.id,
+    new.raw_user_meta_data->>'full_name',
+    v_role,
+    CASE WHEN v_role = 'driver' THEN TRUE ELSE FALSE END
+  );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

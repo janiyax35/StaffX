@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:staffx/main.dart';
-import 'package:staffx/src/utils/supabase_config.dart';
+import 'package:buslink/main.dart';
+import 'package:buslink/src/utils/supabase_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mocktail/mocktail.dart';
 

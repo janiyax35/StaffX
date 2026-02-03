@@ -10,6 +10,7 @@ CREATE TYPE payment_status AS ENUM ('paid', 'unpaid');
 CREATE TABLE profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   role user_role NOT NULL DEFAULT 'staff',
+  is_driver BOOLEAN DEFAULT FALSE,
   full_name TEXT,
   phone TEXT,
   avatar_url TEXT,
